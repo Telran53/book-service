@@ -98,10 +98,15 @@ public class BookServiceImpl implements BookService {
 		return publisherRepository.findPublisherByAuthor(authorName);
 	}
 
+	@Transactional
 	@Override
 	public AuthorDto removeAuthor(String authorName) {
-		// TODO Auto-generated method stub
-		return null;
+		Author author = authorRepository.findById(authorName).orElseThrow(EntityNotFoundException::new);
+//		bookRepository.findByAuthorsNameIgnoreCase(authorName)
+//						.forEach(b -> bookRepository.delete(b));
+		bookRepository.deleteByAuthorsName(authorName);
+		authorRepository.deleteById(authorName);
+		return modelMapper.map(author, AuthorDto.class);
 	}
 
 }
